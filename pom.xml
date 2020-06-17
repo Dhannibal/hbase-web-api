@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.cuit.hbase</groupId>
-	<artifactId>hbase-web</artifactId>
+	<artifactId>hbase-web-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>hbase-web</name>
+	<name>hbase-web-api</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
