@@ -1,11 +1,11 @@
 package com.cuit.hbase.Controller;
 
-import com.cuit.hbase.dao.HbaseConnector;
+import com.cuit.hbase.Service.LoginService;
 import com.cuit.hbase.model.User;
+import com.cuit.hbase.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -15,28 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserLogin {
 
     @Autowired
-    HbaseConnector hbaseConnector;
+    LoginService loginService;
 
-    @RequestMapping("/test")
-    public String test() {
-        hbaseConnector.createTable("testtable", "basic");
-        return "test";
-    }
 
     @PostMapping("/user/login")
-    public String Login(User user) {
-        System.out.println(user.getEmail());
-        System.out.println(user.getPwd());
-
-        return "main";
+    public Response Login(User user) {
+        return loginService.login(user);
     }
 
     @PostMapping("/user/register")
-    public String Register(User user) {
-        System.out.println(user.getName());
-        System.out.println(user.getPwd());
-        System.out.println(user.getEmail());
-
-        return "index";
+    public Response Register(User user) {
+        return loginService.register(user);
     }
 }

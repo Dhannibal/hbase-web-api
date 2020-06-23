@@ -7,5 +7,5 @@ public class User {
     String name;
     String email;
     String pwd;
-    String rowKey;
+    String sex;
 }
