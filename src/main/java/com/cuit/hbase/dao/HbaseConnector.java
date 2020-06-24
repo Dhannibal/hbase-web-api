@@ -72,12 +72,11 @@ public class HbaseConnector {
 
             //基本信息
             User user = new User();
-            Map<byte[], byte[]> basicInfo = result.getFamilyMap(Bytes.toBytes("'BasicInfo'"));
+            Map<byte[], byte[]> basicInfo = result.getFamilyMap(Bytes.toBytes("BasicInfo"));
             user.setEmail(rowKey);
             user.setName(Bytes.toString(basicInfo.get(Bytes.toBytes("name"))));
             user.setPwd(Bytes.toString(basicInfo.get(Bytes.toBytes("pwd"))));
             user.setSex(Bytes.toString(basicInfo.get(Bytes.toBytes("sex"))));
-
             userInfo.setBasicInfo(user);
 
             //关注列表

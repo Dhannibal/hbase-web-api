@@ -37,7 +37,7 @@ public class userBehaviorImp implements userBehavior {
         RandomData randomData = new RandomData();
         Map<String, Boolean> map= new HashMap<String, Boolean>();
 
-        for(int i = 1; i <= 1000; i++) {
+        for(int i = 1; i <= 50; i++) {
             String rowKey = randomData.randomMail();
             if(!map.containsKey(rowKey)) {
                 setFamilyVal(rowKey, "BasicInfo", "name", randomData.randomName());
@@ -53,11 +53,9 @@ public class userBehaviorImp implements userBehavior {
         List<String> list = new ArrayList<String>(map.keySet());
         Random random = new Random();
         for(int i  = 0; i < list.size(); i++) {
-            int cnt = random.nextInt(10)+2;
-            for(int j = i+1; j < list.size() && cnt != 0; j++) {
+            for(int j = i+1; j < list.size(); j++) {
                 if(random.nextBoolean())
                     concernedTo(list.get(i), list.get(j));
-                cnt--;
             }
         }
         return true;

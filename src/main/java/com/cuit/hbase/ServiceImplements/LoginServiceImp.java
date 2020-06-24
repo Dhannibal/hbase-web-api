@@ -20,7 +20,8 @@ public class LoginServiceImp implements LoginService {
         String rowKey = user.getEmail();
         String pwd = user.getPwd();
         Map<byte[], byte[]> basicInfo = hbaseConnector.getFamily(rowKey, "BasicInfo");
-        String vaild = Bytes.toString(basicInfo.get(Bytes.toBytes("pwd")));
+        if(basicInfo == null) return  new Response(201, "没有该用户", "fail");
+        String vaild  = Bytes.toString(basicInfo.get(Bytes.toBytes("pwd")));
         if(vaild.equals(pwd)) {
             return new Response(200, "登录成功", "success");
         }

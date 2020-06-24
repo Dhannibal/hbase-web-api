@@ -1,11 +1,10 @@
 package com.cuit.hbase.Controller;
 
 import com.cuit.hbase.Service.userBehavior;
+import com.cuit.hbase.model.User;
 import com.cuit.hbase.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
@@ -27,13 +26,13 @@ public class UserBehavior {
     }
 
     @PostMapping("/user/getMyConcerned")
-    public Response getMyConcerned(String v) {
-        return new Response(200, "success", BehaviorService.getConcerned(v));
+    public Response getMyConcerned(@RequestBody User v) {
+        return new Response(200, "success", BehaviorService.getConcerned(v.getEmail()));
     }
 
     @PostMapping("/user/getMyFans")
-    public Response getMyFans(String v) {
-        return new Response(200, "success", BehaviorService.getMyFans(v));
+    public Response getMyFans(@RequestBody User v) {
+        return new Response(200, "success", BehaviorService.getMyFans(v.getEmail()));
     }
 
     @PostMapping("/user/isConcerned")
@@ -42,7 +41,8 @@ public class UserBehavior {
     }
 
     @PostMapping("/user/getNotMyFans")
-    public Response isConcerned(String v) {
-        return new Response(200, "success", BehaviorService.getNotConcerned(v));
+    public Response isConcerned(@RequestBody User v) {
+        System.out.println(v.getEmail());
+        return new Response(200, "success", BehaviorService.getNotConcerned(v.getEmail()));
     }
 }

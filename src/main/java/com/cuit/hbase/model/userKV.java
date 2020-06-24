@@ -11,4 +11,6 @@ public class userKV {
         this.mail = mail;
         this.name = name;
     }
+
+    public userKV() { }
 }
