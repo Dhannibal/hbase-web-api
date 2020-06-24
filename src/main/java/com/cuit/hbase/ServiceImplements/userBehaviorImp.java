@@ -1,7 +1,9 @@
 package com.cuit.hbase.ServiceImplements;
 
+import com.cuit.hbase.Entity.UserInfo;
 import com.cuit.hbase.Service.userBehavior;
 import com.cuit.hbase.dao.HbaseConnector;
+import com.cuit.hbase.model.userKV;
 import com.cuit.hbase.utils.RandomData;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,5 +61,58 @@ public class userBehaviorImp implements userBehavior {
             }
         }
         return true;
+    }
+
+    @Override
+    public Boolean cancelConcernedTo(String k1, String k2) {
+        connector.deleteByRowKeyCell(k1, "concernedId", k2);
+        connector.deleteByRowKeyCell(k2, "fansId", k1);
+        return true;
+    }
+
+    @Override
+    public  List<userKV> getConcerned(String k) {
+        List<userKV> res = new ArrayList<userKV>();
+        Map<byte[], byte[]> concerns = connector.getFamily(k, "concernedId");
+        return getUserKVS(res, concerns);
+    }
+
+    @Override
+    public List<userKV> getMyFans(String k) {
+        List<userKV> res = new ArrayList<userKV>();
+        Map<byte[], byte[]> concerns = connector.getFamily(k, "fansId");
+        return getUserKVS(res, concerns);
+    }
+
+    private List<userKV> getUserKVS(List<userKV> res, Map<byte[], byte[]> concerns) {
+        for(Map.Entry<byte[], byte[]> entry:concerns.entrySet()) {
+            userKV userinfo = new userKV();
+            userinfo.setMail(Bytes.toString(entry.getKey()));
+            userinfo.setName(Bytes.toString(entry.getValue()));
+            res.add(userinfo);
+        }
+        return res;
+    }
+
+    @Override
+    public Boolean isConcerned(String k1, String k2) {
+        return connector.getFamily(k1, "concernedId").containsKey(Bytes.toBytes(k2));
+    }
+
+    @Override
+    public List<userKV> getNotConcerned(String k) {
+        List<userKV> res = new ArrayList<>();
+        List<userKV> myConcerned = getConcerned(k);
+        Set<String> set = new HashSet<>();
+        for(userKV user : myConcerned) {
+            set.add(user.getMail());
+        }
+        List<UserInfo> allTable = connector.getAllTable();
+        for(UserInfo userInfo : allTable) {
+            if((!set.contains(userInfo.getRowKey())) && (!userInfo.getRowKey().equals(k))) {
+                res.add(new userKV(userInfo.getRowKey(), userInfo.getBasicInfo().getName()));
+            }
+        }
+        return res;
     }
 }

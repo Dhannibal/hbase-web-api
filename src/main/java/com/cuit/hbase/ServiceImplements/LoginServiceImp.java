@@ -14,6 +14,7 @@ import java.util.Map;
 public class LoginServiceImp implements LoginService {
     @Autowired
     HbaseConnector hbaseConnector;
+
     @Override
     public Response login(User user) {
         String rowKey = user.getEmail();
