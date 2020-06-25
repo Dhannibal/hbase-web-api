@@ -3,6 +3,7 @@ package com.cuit.hbase.ServiceImplements;
 import com.cuit.hbase.Entity.UserInfo;
 import com.cuit.hbase.Service.userBehavior;
 import com.cuit.hbase.dao.HbaseConnector;
+import com.cuit.hbase.model.User;
 import com.cuit.hbase.model.userKV;
 import com.cuit.hbase.utils.RandomData;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -94,12 +95,14 @@ public class userBehaviorImp implements userBehavior {
 
     @Override
     public Boolean isConcerned(String k1, String k2) {
-        return connector.getFamily(k1, "concernedId").containsKey(Bytes.toBytes(k2));
+        Map<byte[], byte[]> concernedId = connector.getFamily(k1, "concernedId");
+        if(concernedId == null) return false;
+        return concernedId.containsKey(Bytes.toBytes(k2));
     }
 
     @Override
-    public List<userKV> getNotConcerned(String k) {
-        List<userKV> res = new ArrayList<>();
+    public List<User> getNotConcerned(String k) {
+        List<User> res = new ArrayList<>();
         List<userKV> myConcerned = getConcerned(k);
         Set<String> set = new HashSet<>();
         for(userKV user : myConcerned) {
@@ -108,7 +111,11 @@ public class userBehaviorImp implements userBehavior {
         List<UserInfo> allTable = connector.getAllTable();
         for(UserInfo userInfo : allTable) {
             if((!set.contains(userInfo.getRowKey())) && (!userInfo.getRowKey().equals(k))) {
-                res.add(new userKV(userInfo.getRowKey(), userInfo.getBasicInfo().getName()));
+                User user = new User();
+                user.setEmail(userInfo.getRowKey());
+                user.setName(userInfo.getBasicInfo().getName());
+                user.setSex(userInfo.getBasicInfo().getSex());
+                res.add(user);
             }
         }
         return res;

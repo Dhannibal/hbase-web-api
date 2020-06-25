@@ -2,6 +2,7 @@ package com.cuit.hbase.Controller;
 
 import com.cuit.hbase.Service.userBehavior;
 import com.cuit.hbase.model.User;
+import com.cuit.hbase.model.pairUser;
 import com.cuit.hbase.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +15,14 @@ public class UserBehavior {
 
 
     @PostMapping("/user/concernedto")
-    public Response userConcerned(String v1, String v2) {
-        BehaviorService.concernedTo(v1, v2);
+    public Response userConcerned(@RequestBody pairUser users) {
+        BehaviorService.concernedTo(users.getU1(), users.getU2());
         return new Response(200, "success", "关注成功");
     }
 
     @PostMapping("/user/cancelconcernedto")
-    public Response userCancelConcerned(String v1, String v2) {
-        BehaviorService.cancelConcernedTo(v1, v2);
+    public Response userCancelConcerned(@RequestBody pairUser users) {
+        BehaviorService.cancelConcernedTo(users.getU1(), users.getU2());
         return new Response(200, "success", "取关成功");
     }
 
@@ -36,8 +37,8 @@ public class UserBehavior {
     }
 
     @PostMapping("/user/isConcerned")
-    public Response isConcerned(String v1, String v2) {
-        return new Response(200, "success", BehaviorService.isConcerned(v1, v2));
+    public Response isConcerned(@RequestBody pairUser users) {
+        return new Response(200, "success", BehaviorService.isConcerned(users.getU1(), users.getU2()));
     }
 
     @PostMapping("/user/getNotMyFans")

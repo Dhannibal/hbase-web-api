@@ -1,6 +1,7 @@
 package com.cuit.hbase.Service;
 
 
+import com.cuit.hbase.model.User;
 import com.cuit.hbase.model.userKV;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface userBehavior {
 
     public Boolean isConcerned(String k1, String k2);
 
-    public List<userKV> getNotConcerned(String k);
+    public List<User> getNotConcerned(String k);
 }
