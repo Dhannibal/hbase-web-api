@@ -3,6 +3,7 @@ package com.cuit.hbase.Service;
 
 import com.cuit.hbase.model.User;
 import com.cuit.hbase.model.userKV;
+import com.cuit.hbase.model.userPage;
 
 import java.util.List;
 
@@ -16,11 +17,11 @@ public interface userBehavior {
 
     public Boolean cancelConcernedTo(String k1, String k2);
 
-    public List<userKV> getConcerned(String k);
+    public List<userPage> getConcerned(String k);
 
-    public List<userKV> getMyFans(String k);
+    public List<userPage> getMyFans(String k);
 
     public Boolean isConcerned(String k1, String k2);
 
-    public List<User> getNotConcerned(String k);
+    public List<userPage> getNotConcerned(String k);
 }

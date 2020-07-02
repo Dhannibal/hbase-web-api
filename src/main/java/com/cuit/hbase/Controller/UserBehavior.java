@@ -22,6 +22,7 @@ public class UserBehavior {
 
     @PostMapping("/user/cancelconcernedto")
     public Response userCancelConcerned(@RequestBody pairUser users) {
+        System.out.println(users.getU1() + "->>" + users.getU2());
         BehaviorService.cancelConcernedTo(users.getU1(), users.getU2());
         return new Response(200, "success", "取关成功");
     }

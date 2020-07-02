@@ -5,6 +5,7 @@ import com.cuit.hbase.Service.userBehavior;
 import com.cuit.hbase.dao.HbaseConnector;
 import com.cuit.hbase.model.User;
 import com.cuit.hbase.model.userKV;
+import com.cuit.hbase.model.userPage;
 import com.cuit.hbase.utils.RandomData;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,28 +71,32 @@ public class userBehaviorImp implements userBehavior {
     }
 
     @Override
-    public  List<userKV> getConcerned(String k) {
-        List<userKV> res = new ArrayList<userKV>();
+    public  List<userPage> getConcerned(String k) {
+        List<userPage> res = new ArrayList<userPage>();
         Map<byte[], byte[]> concerns = connector.getFamily(k, "concernedId");
-        return getUserKVS(res, concerns);
+        return getUserPages(res, concerns);
     }
 
     @Override
-    public List<userKV> getMyFans(String k) {
-        List<userKV> res = new ArrayList<userKV>();
+    public List<userPage> getMyFans(String k) {
+        List<userPage> res = new ArrayList<userPage>();
         Map<byte[], byte[]> concerns = connector.getFamily(k, "fansId");
-        return getUserKVS(res, concerns);
+        return getUserPages(res, concerns);
     }
 
-    private List<userKV> getUserKVS(List<userKV> res, Map<byte[], byte[]> concerns) {
+    private List<userPage> getUserPages(List<userPage> res, Map<byte[], byte[]> concerns) {
         for(Map.Entry<byte[], byte[]> entry:concerns.entrySet()) {
-            userKV userinfo = new userKV();
-            userinfo.setMail(Bytes.toString(entry.getKey()));
+            userPage userinfo = new userPage();
+            userinfo.setEmail(Bytes.toString(entry.getKey()));
             userinfo.setName(Bytes.toString(entry.getValue()));
+            userinfo.setSex(Bytes.toString(connector.getFamily(userinfo.getEmail(), "BasicInfo").get(Bytes.toBytes("sex"))));
+            userinfo.setConcernedNum(connector.getFamilyCount(userinfo.getEmail(), "concernedId"));
+            userinfo.setFansNum(connector.getFamilyCount(userinfo.getEmail(), "fansId"));
             res.add(userinfo);
         }
         return res;
     }
+
 
     @Override
     public Boolean isConcerned(String k1, String k2) {
@@ -101,20 +106,22 @@ public class userBehaviorImp implements userBehavior {
     }
 
     @Override
-    public List<User> getNotConcerned(String k) {
-        List<User> res = new ArrayList<>();
-        List<userKV> myConcerned = getConcerned(k);
+    public List<userPage> getNotConcerned(String k) {
+        List<userPage> res = new ArrayList<>();
+        List<userPage> myConcerned = getConcerned(k);
         Set<String> set = new HashSet<>();
-        for(userKV user : myConcerned) {
-            set.add(user.getMail());
+        for(userPage user : myConcerned) {
+            set.add(user.getEmail());
         }
         List<UserInfo> allTable = connector.getAllTable();
         for(UserInfo userInfo : allTable) {
             if((!set.contains(userInfo.getRowKey())) && (!userInfo.getRowKey().equals(k))) {
-                User user = new User();
+                userPage user = new userPage();
                 user.setEmail(userInfo.getRowKey());
                 user.setName(userInfo.getBasicInfo().getName());
                 user.setSex(userInfo.getBasicInfo().getSex());
+                user.setConcernedNum(connector.getFamilyCount(userInfo.getRowKey(), "concernedId"));
+                user.setFansNum(connector.getFamilyCount(userInfo.getRowKey(), "fansId"));
                 res.add(user);
             }
         }
